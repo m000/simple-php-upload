@@ -62,6 +62,9 @@
 
 		// Files that will be ignored
 		'ignores' => array('.', '..', 'LICENSE', 'README.md'),
+
+		// Amount of seconds to wait before redirecting to script (0 to disable).
+		'redirect_after' => 5,
 	);
 	// =============={ Configuration End }==============
 
@@ -176,24 +179,66 @@
 		if (move_uploaded_file($file_data['tmp_name'], $file_data['upload_target_file'])) {
 			if ($settings['allow_deletion'] || $settings['allow_private'])
 				$_SESSION['upload_user_files'][] = $file_data['target_file_name'];
-			echo $settings['url'] .  $file_data['target_file_name'] . "\n";
-		} else {
-			echo 'Error: unable to upload the file.';
+
+			$uploaded_url = $settings['url'] .  htmlspecialchars($file_data['target_file_name']);
+			if ($settings['redirect_after'] > 0) {
+				?>
+				<li>Success: <a href="<?php echo $uploaded_url; ?>"><?php echo $uploaded_url; ?></a></li>
+				<?php
+			}
+			else {
+				echo $uploaded_url . "\n";
+			}
+		}
+		else {
+			if ($settings['redirect_after'] > 0) {
+				?>
+				<li>Error: <?php echo htmlspecialchars($file_data['uploaded_file_name']) ?></li>
+				<?php
+			}
+			else {
+				echo 'Error: unable to upload the file ' . htmlspecialchars($file_data['uploaded_file_name']);
+			}
 		}
 	}
 
 
-	// Files are being POSEed. Uploading them one by one.
+	// Files are being POSTEed. Uploading them one by one.
 	if (isset($_FILES['file'])) {
-		header('Content-type: text/plain');
+		if ($settings['redirect_after'] > 0) {
+			$redirect_url = $settings['url'] . substr($_SERVER["REQUEST_URI"], 1);
+			?>
+			<html xmlns="http://www.w3.org/1999/xhtml">
+			<head>
+			<title>File Upload</title>
+			<meta http-equiv="refresh" content="<?php echo $settings['redirect_after']; ?>;URL='<?php echo $redirect_url; ?>'" />
+			</head>
+			<body><ul>
+			<?php
+		}
+		else {
+			header('Content-type: text/plain');
+		}
+
 		if (is_array($_FILES['file'])) {
 			$file_array = DiverseArray($_FILES['file']);
-			foreach ($file_array as $file_data)
+			foreach ($file_array as $file_data) {
 				UploadFile($file_data);
-		} else
+			}
+		}
+		else {
 			UploadFile($_FILES['file']);
+		}
+
+		if ($settings['redirect_after'] > 0) {
+			?>
+			</ul></body>
+			</html>
+			<?php
+		}
 		exit;
 	}
+
 
 	// Other file functions (delete, private).
 	if (isset($_POST)) {
