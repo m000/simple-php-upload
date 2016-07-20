@@ -54,7 +54,7 @@
 		'debug' => false,
 
 		// Complete URL to your directory (including tracing slash)
-		'url' => 'http://strace.club/',
+		'url' => 'http://' . $_SERVER["HTTP_HOST"] . '/',
 
 		// Amount of seconds that each file should be stored for (0 for no limit)
 		// Default 30 days
