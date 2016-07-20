@@ -30,7 +30,7 @@
 		'allow_deletion' => true,
 
 		// Allow users to mark files as hidden
-		'allow_private' => true,
+		'allow_private' => false,
 
 		// Display file sizes
 		'listfiles_size' => true,
@@ -42,7 +42,7 @@
 		'listfiles_date_format' => 'F d Y H:i:s',
 
 		// Randomize file names (number of 'false')
-		'random_name_len' => 8,
+		'random_name_len' => false,
 
 		// Keep filetype information (if random name is activated)
 		'random_name_keep_type' => true,
@@ -58,7 +58,7 @@
 
 		// Amount of seconds that each file should be stored for (0 for no limit)
 		// Default 30 days
-		'time_limit' => 60 * 60 * 24 * 30,
+		'time_limit' => 0,
 
 		// Files that will be ignored
 		'ignores' => array('.', '..', 'LICENSE', 'README.md'),
@@ -67,7 +67,7 @@
 		'redirect_after' => 5,
 
 		// Allow overwriting files
-		'allow_overwrite' => false,
+		'allow_overwrite' => true,
 	);
 	// =============={ Configuration End }==============
 
