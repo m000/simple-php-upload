@@ -233,12 +233,13 @@
 		return $file_array;
 	}
 
-	$file_array = ListFiles($settings['uploaddir'], $data['ignores']);
-
 	// Removing old files
-	foreach ($file_array as $file)
-		if ($settings['time_limit'] < time() - filemtime($file))
-			unlink($file);
+	if ($settings['time_limit'] > 0 ) {	
+		foreach ($file_array as $file) {
+			if ($settings['time_limit'] < time() - filemtime($file))
+				unlink($file);
+		}
+	}
 
 	$file_array = ListFiles($settings['uploaddir'], $data['ignores']);
 
