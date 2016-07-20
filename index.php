@@ -65,6 +65,9 @@
 
 		// Amount of seconds to wait before redirecting to script (0 to disable).
 		'redirect_after' => 5,
+
+		// Allow overwriting files
+		'allow_overwrite' => false,
 	);
 	// =============={ Configuration End }==============
 
@@ -169,9 +172,9 @@
 		}
 		$file_data['upload_target_file'] = $data['uploaddir'] . DIRECTORY_SEPARATOR . $file_data['target_file_name'];
 
-		// Do now allow to overwriting files
-		if (file_exists($file_data['upload_target_file'])) {
-			echo 'File name already exists' . "\n";
+		// Check for file overwrite
+		if (!$settings['allow_overwrite'] && file_exists($file_data['upload_target_file'])) {
+			echo 'File already exists.' . "\n";
 			return;
 		}
 
