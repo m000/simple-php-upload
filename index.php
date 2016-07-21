@@ -18,7 +18,7 @@
 	$settings = array(
 
 		// Website title
-		'title' => 'strace.club',
+		'title' => 'provenance.club',
 
 		// Directory to store uploaded files
 		'uploaddir' => '.',
