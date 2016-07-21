@@ -273,11 +273,20 @@
 	function ListFiles ($dir, $exclude) {
 		$file_array = array();
 		$dh = opendir($dir);
-			while (false !== ($filename = readdir($dh)))
-				if (is_file($filename) && !in_array($filename, $exclude))
-					$file_array[filemtime($filename)] = $filename;
-		ksort($file_array);
-		$file_array = array_reverse($file_array, true);
+		while (false !== ($filename = readdir($dh))) {
+			if (is_file($filename) && !in_array($filename, $exclude)) {
+				$k = filemtime($filename);
+				if (!array_key_exists($k, $file_array)) {
+					$file_array[$k] = array();
+				}
+				$file_array[$k][] = $filename;
+
+				// inefficient, but that's the least of our worries
+				natcasesort($file_array[$k]);
+			}
+		}
+		closedir($dir);
+		krsort($file_array);
 		return $file_array;
 	}
 
@@ -408,7 +417,8 @@
 		<?php if ($settings['listfiles']) { ?>
 			<ul id="simpleupload-ul">
 				<?php
-					foreach ($file_array as $mtime => $filename) {
+				foreach ($file_array as $mtime => $filenames) {
+					foreach ($filenames as $idx => $filename) {
 						$file_info = array();
 						$file_owner = false;
 						$file_private = $filename[0] === '.';
@@ -451,6 +461,7 @@
 							echo "</li>";
 						}
 					}
+				}
 				?>
 			</ul>
 		<?php } ?>
